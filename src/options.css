@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.param {
+  flex-direction: row;
+  padding: 3px;
+}
+
+.button {
+  padding: 3px;
+}
