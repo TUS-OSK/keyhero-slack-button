@@ -1,6 +1,7 @@
 const endpoint = document.getElementById('url')
 const hoge = document.getElementById('hoge')
 const auto = document.getElementById('auto')
+const status = document.getElementById('status')
 chrome.storage.local.get({ endpoint }, r => {
   endpoint.value = r.endpoint
 })
@@ -13,9 +14,12 @@ chrome.storage.local.get({ auto }, r => {
 
 function saveOptions() {
   chrome.storage.local.set(
-    { endpoint: endpoint.value, hoge: hoge.value, auto: auto.checked },
+    {
+      endpoint: endpoint.value,
+      hoge: hoge.value,
+      auto: auto.checked
+    },
     () => {
-      const status = document.getElementById('status')
       status.textContent = 'Settings saved.'
       setTimeout(() => {
         status.textContent = ''
@@ -26,4 +30,8 @@ function saveOptions() {
 
 document.getElementById('save').addEventListener('click', () => {
   saveOptions()
+})
+
+document.getElementById('settings').addEventListener('change', () => {
+  status.textContent = 'Settings is not saved yet.'
 })
