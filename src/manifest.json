@@ -9,7 +9,11 @@
       "js": ["content.js"]
     }
   ],
-  "browser_action": {
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "page_action": {
     "default_popup": "options.html"
   },
   "options_ui": {

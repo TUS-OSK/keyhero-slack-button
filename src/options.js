@@ -1,21 +1,20 @@
-const endpoint = document.getElementById('url')
+const url = document.getElementById('url')
 const hoge = document.getElementById('hoge')
 const auto = document.getElementById('auto')
 const status = document.getElementById('status')
-chrome.storage.local.get({ endpoint }, r => {
-  endpoint.value = r.endpoint
-})
-chrome.storage.local.get({ hoge }, r => {
+const settings = document.getElementById('settings')
+const needSave = { url: false, hoge: false, auto: false }
+
+chrome.storage.local.get(r => {
+  url.value = r.url
   hoge.value = r.hoge
-})
-chrome.storage.local.get({ auto }, r => {
   auto.checked = r.auto
 })
 
 function saveOptions() {
   chrome.storage.local.set(
     {
-      endpoint: endpoint.value,
+      url: url.value,
       hoge: hoge.value,
       auto: auto.checked
     },
@@ -32,6 +31,42 @@ document.getElementById('save').addEventListener('click', () => {
   saveOptions()
 })
 
-document.getElementById('settings').addEventListener('change', () => {
-  status.textContent = 'Settings is not saved yet.'
+settings.addEventListener('keyup', e => {
+  chrome.storage.local.get(r => {
+    if (r[e.target.id] === e.target.value) {
+      needSave[e.target.id] = false
+    } else {
+      needSave[e.target.id] = true
+    }
+    if (
+      Object.keys(needSave).some(key => {
+        return needSave[key]
+      }) &&
+      needSave !== undefined
+    ) {
+      status.textContent = 'Settings is not saved yet.'
+    } else {
+      status.textContent = ''
+    }
+  })
+})
+
+auto.addEventListener('change', e => {
+  chrome.storage.local.get(r => {
+    if (r[e.target.id] === e.target.checked) {
+      needSave[e.target.id] = false
+    } else {
+      needSave[e.target.id] = true
+    }
+    if (
+      Object.keys(needSave).some(key => {
+        return needSave[key]
+      }) &&
+      needSave !== undefined
+    ) {
+      status.textContent = 'Settings is not saved yet.'
+    } else {
+      status.textContent = ''
+    }
+  })
 })
