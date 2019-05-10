@@ -1,14 +1,23 @@
 .container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  padding-left: 8px;
 }
 
 .param {
-  flex-direction: row;
-  padding: 3px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.label-input {
+  text-align: left;
+  margin-right: 4px;
+  width: 64px;
+}
+
+.label-checkbox {
+  margin-right: 4px;
 }
 
 .button {
-  padding: 3px;
+  margin-right: 4px;
 }
