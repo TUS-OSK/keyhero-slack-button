@@ -48,7 +48,6 @@ shareBtn = {
   'border-color': '#dd4814',
   'background-color': '#dd4814',
   color: '#ffffff',
-  'line-height': '1.1',
   'text-align': 'center',
   'vertical-align': 'middle',
   cursor: 'pointer',
@@ -58,7 +57,8 @@ shareBtn = {
   'border-radius': '6px',
   'box-sizing': 'border-box',
   'text-decoration': 'none',
-  display: 'none'
+  display: 'none',
+  outline: 'none'
 }
 Object.keys(shareBtn).forEach(key => {
   shareButton.style[key] = shareBtn[key]
