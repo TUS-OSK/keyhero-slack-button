@@ -5,16 +5,21 @@ const accuracy = document.querySelector('[data-reactid=".0.1.1.3.0"]')
 // 設定の同期
 const options = {}
 chrome.storage.local.get(r => {
-  options.url = r.url
-  options.hoge = r.hoge
-  options.auto = r.auto
+  options.url = r.url || ''
+  options.cryptedToken = r.cryptedToken || ''
+  options.iv = r.iv || ''
+  options.auto = r.auto || false
   checkAuto(r.auto)
 })
 chrome.storage.onChanged.addListener(changes => {
   for (const key in changes) {
     const change = changes[key]
     options[key] = change.newValue
-    console.log(`keyを${change.oldValue}から${change.newValue}に変更しました`)
+    console.log(
+      `(changed key) ${key}を${change.oldValue}から${
+        change.newValue
+      }に変更しました`
+    )
     if (key === 'auto') {
       checkAuto(change.newValue)
     }
@@ -83,8 +88,10 @@ function sendToSlack() {
 function checkAuto(enableAuto) {
   if (enableAuto) {
     shareButton.style.display = 'none'
+    console.log('(options) enable auto sending')
   } else if (!enableAuto) {
     shareButton.style.display = 'inline'
+    console.log('(options) disable auto sending')
   } else {
     console.error('(options) something wrong')
   }

@@ -1,13 +1,15 @@
 const url = document.getElementById('url')
-const hoge = document.getElementById('hoge')
+const cryptedToken = document.getElementById('crypted-token')
+const iv = document.getElementById('iv')
 const auto = document.getElementById('auto')
 const status = document.getElementById('status')
 const settings = document.getElementById('settings')
-const needSave = { url: false, hoge: false, auto: false }
+const needSave = { url: false, cryptedToken: false, iv: false, auto: false }
 
 chrome.storage.local.get(r => {
   url.value = r.url
-  hoge.value = r.hoge
+  cryptedToken.value = r.cryptedToken
+  iv.value = r.iv
   auto.checked = r.auto
 })
 
@@ -15,7 +17,8 @@ function saveOptions() {
   chrome.storage.local.set(
     {
       url: url.value,
-      hoge: hoge.value,
+      cryptedToken: cryptedToken.value,
+      iv: iv.value,
       auto: auto.checked
     },
     () => {
