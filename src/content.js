@@ -1,14 +1,15 @@
-// scoreのDOM取得
+// To get dom of the score
 const speed = document.querySelector('[data-reactid=".0.1.1.1.0"]')
 const accuracy = document.querySelector('[data-reactid=".0.1.1.3.0"]')
 
-// 設定の同期
+// To synchronize settings
 const options = {}
 chrome.storage.local.get(r => {
   options.url = r.url || ''
   options.cryptedToken = r.cryptedToken || ''
   options.iv = r.iv || ''
   options.auto = r.auto || false
+  options.channelId = r.channelId || ''
   checkAuto(r.auto)
 })
 chrome.storage.onChanged.addListener(changes => {
@@ -16,9 +17,9 @@ chrome.storage.onChanged.addListener(changes => {
     const change = changes[key]
     options[key] = change.newValue
     console.log(
-      `(changed key) ${key}を${change.oldValue}から${
+      `(options) changed the value of ${key} from ${change.oldValue} to ${
         change.newValue
-      }に変更しました`
+      }`
     )
     if (key === 'auto') {
       checkAuto(change.newValue)
@@ -26,18 +27,20 @@ chrome.storage.onChanged.addListener(changes => {
   }
 })
 
-// ゲームが終わったかの監視
+// To check if the game is over
 const graph = document.querySelector('.flot-overlay')
 const config = {
   attributes: true
 }
 const gameObserver = new MutationObserver(() => {
   if (options.auto) sendToSlack()
-  console.log('Finished!')
+  const score = formatScore(speed.textContent, accuracy.textContent)
+  console.log('(keyhero) Finished!')
+  console.log(score)
 })
 gameObserver.observe(graph, config)
 
-// シェアボタンの追加
+// To insert slack share button
 const shareButton = document.createElement('button')
 shareButton.onmouseenter = function() {
   shareButton.style.backgroundColor = '#962d20'
@@ -81,18 +84,34 @@ function formatScore(speed, accuracy) {
 
 function sendToSlack() {
   const score = formatScore(speed.textContent, accuracy.textContent)
-  // TODO: replace slack message api
-  window.alert(score)
+  callApi(score)
+  console.log(`(Call API) ${score}`)
 }
 
 function checkAuto(enableAuto) {
   if (enableAuto) {
     shareButton.style.display = 'none'
-    console.log('(options) enable auto sending')
+    console.log('(options) enabled auto sending')
   } else if (!enableAuto) {
     shareButton.style.display = 'inline'
-    console.log('(options) disable auto sending')
+    console.log('(options) disabled auto sending')
   } else {
     console.error('(options) something wrong')
   }
+}
+
+function callApi(text) {
+  chrome.runtime.sendMessage(
+    {
+      messageType: 'api',
+      url: options.url,
+      cryptedToken: options.cryptedToken,
+      iv: options.iv,
+      channelId: options.channelId,
+      text: text
+    },
+    res => {
+      console.log(`(Call API) ${res.status}`)
+    }
+  )
 }
