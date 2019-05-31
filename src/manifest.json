@@ -2,7 +2,7 @@
   "name": "keyhero-slack-button",
   "version": "0.0.1",
   "description": "keyheroにslackのSNSボタンを作成する拡張機能です.",
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs"],
   "content_scripts": [
     {
       "matches": ["https://www.keyhero.com/free-typing-test/"],
