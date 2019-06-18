@@ -33,10 +33,10 @@ const config = {
   attributes: true
 }
 const gameObserver = new MutationObserver(() => {
-  if (options.auto) sendToSlack()
-  const score = formatScore(speed.textContent, accuracy.textContent)
   console.log('(keyhero) Finished!')
-  console.log(score)
+  if (options.auto) {
+    return sendToSlack()
+  }
 })
 gameObserver.observe(graph, config)
 
@@ -77,15 +77,17 @@ const m = document.querySelector('[data-reactid=".0.1.0"]')
 m.appendChild(document.createTextNode(' '))
 m.appendChild(shareButton)
 
-function formatScore(speed, accuracy) {
-  const score = `Speed: ${speed} WPM\nAccuracy: ${accuracy}%`
+function getScore() {
+  const score = `Speed: ${speed.textContent} WPM\nAccuracy: ${
+    accuracy.textContent
+  }%`
   return score
 }
 
 function sendToSlack() {
-  const score = formatScore(speed.textContent, accuracy.textContent)
-  callApi(score)
-  console.log(`(Call API) ${score}`)
+  const result = getResult()
+  callApi(result)
+  console.log(`(Call API)\n${result}`)
 }
 
 function checkAuto(enableAuto) {
@@ -114,4 +116,14 @@ function callApi(text) {
       console.log(`(Call API) ${res.status}`)
     }
   )
+}
+
+function getTitle() {
+  const title = document.querySelector('[data-reactid=".0.0.0.0.0.0"]')
+  return title.textContent
+}
+
+function getResult(title, score) {
+  const result = getTitle() + '\n' + getScore()
+  return result
 }
